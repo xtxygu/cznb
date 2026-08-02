@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>神秘辅助 · 和平交易平台</title>
+    <!-- Font Awesome 图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+        /* ============================================================
+               暗黑 · 神秘辅助交易平台 (加强版)
+               ============================================================ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Poppins', system-ui, sans-serif;
+        }
+
+        body {
+            background: #080b12;
+            color: #c8d0e0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            background-image: radial-gradient(ellipse at 30% 40%, #111b2e 0%, #05080e 100%);
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 500px;
+            position: relative;
+        }
+
+        .page {
+            display: none;
+            animation: fadeIn 0.55s ease;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(24px) scale(0.96);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* ===== 加载动画 ===== */
+        .loading-card {
+            background: linear-gradient(145deg, #111b2e, #0a1020);
+            border-radius: 32px;
+            padding: 48px 28px 40px;
+            border: 1px solid rgba(60, 140, 255, 0.06);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), inset 0 0 80px rgba(0, 40, 120, 0.02);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            min-height: 420px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .loading-card::before {
+            content: '';
+            position: absolute;
+            top: -60%;
+            left: -60%;
+            width: 220%;
+            height: 220%;
+            background: radial-gradient(circle at 30% 20%, rgba(60, 140, 255, 0.04), transparent 70%);
+            pointer-events: none;
+        }
+
+        .loading-logo {
+            font-size: 64px;
+            color: #4a8aff;
+            margin-bottom: 8px;
+            filter: drop-shadow(0 0 40px rgba(60, 140, 255, 0.15));
+            animation: pulseGlow 2s ease-in-out infinite;
+        }
+
+        @keyframes pulseGlow {
+            0%,
+            100% {
+                transform: scale(1);
+                filter: drop-shadow(0 0 30px rgba(60, 140, 255, 0.1));
+            }
+            50% {
+                transform: scale(1.04);
+                filter: drop-shadow(0 0 60px rgba(60, 140, 255, 0.2));
+            }
+        }
+
+        .loading-title {
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            background: linear-gradient(135deg, #7ab7ff, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 4px;
+        }
+
+        .loading-sub {
+            font-size: 14px;
+            color: #4a6a8a;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+
+        .loading-partner {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(60, 140, 255, 0.04);
+            border: 1px solid rgba(60, 140, 255, 0.06);
+            border-radius: 60px;
+            padding: 10px 24px;
+            margin-bottom: 30px;
+            font-size: 15px;
+            color: #7a9abc;
+        }
+
+        .loading-partner i {
+            color: #fbbf24;
+            font-size: 18px;
+        }
+
+        .loading-partner strong {
+            color: #e0ecff;
+            font-weight: 700;
+        }
+
+        .loader-bar {
+            width: 200px;
+            height: 3px;
+            background: rgba(60, 140, 255, 0.06);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 6px auto 0;
+            position: relative;
+        }
+
+        .loader-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, #4a8aff, #a78bfa, transparent);
+            animation: loadingSlide 2.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+        }
+
+        @keyframes loadingSlide {
+            0% {
+                left: -100%;
+            }
+            100% {
+                left: 200%;
+            }
+        }
+
+        .loading-hint {
+            font-size: 12px;
+            color: #2a4a6a;
+            margin-top: 18px;
+            letter-spacing: 1px;
+        }
+
+        /* ===== 公告 ===== */
+        .notice-card {
+            background: linear-gradient(145deg, #111b2e, #0a1020);
+            border-radius: 32px;
+            padding: 34px 26px 30px;
+            border: 1px solid rgba(60, 140, 255, 0.06);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), inset 0 0 80px rgba(0, 40, 120, 0.02);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .notice-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 20%, rgba(60, 140, 255, 0.03), transparent 70%);
+            pointer-events: none;
+        }
+
+        .notice-icon {
+            font-size: 52px;
+            color: #4a8aff;
+            margin-bottom: 10px;
+            filter: drop-shadow(0 0 30px rgba(60, 140, 255, 0.1));
+            display: block;
+        }
+
+        .notice-title {
+            font-size: 26px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            background: linear-gradient(135deg, #7ab7ff, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 4px;
+        }
+
+        .notice-sub {
+            font-size: 13px;
+            color: #4a6a8a;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 18px;
+        }
+
+        .notice-body {
+            text-align: left;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 16px;
+            padding: 18px 20px;
+            margin-bottom: 22px;
+            border-left: 3px solid rgba(60, 140, 255, 0.12);
+            font-size: 14px;
+            line-height: 1.9;
+            color: #b0c8e0;
+        }
+
+        .notice-body .highlight {
+            color: #fbbf24;
+            font-weight: 600;
+        }
+
+        .notice-body .partner-name {
+            color: #7ab7ff;
+            font-weight: 700;
+        }
+
+        .notice-body .price-tag {
+            display: inline-block;
+            background: rgba(60, 140, 255, 0.08);
+            padding: 2px 16px;
+            border-radius: 40px;
+            font-weight: 700;
+            color: #fbbf24;
+            font-size: 16px;
+        }
+
+        .notice-body .divider {
+            border: none;
+            border-top: 1px dashed rgba(60, 120, 255, 0.05);
+            margin: 12px 0;
+        }
+
+        .notice-body .fee-detail {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px 0;
+            padding: 4px 0;
+        }
+
+        .notice-body .fee-detail span {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+            font-size: 14px;
+        }
+
+        .notice-body .fee-detail i {
+            color: #3a5a7a;
+            font-size: 12px;
+            width: 18px;
+        }
+
+        .notice-footer {
+            display: flex;
+            gap: 12px;
+            margin-top: 6px;
+        }
+
+        .notice-footer button {
+            flex: 1;
+            padding: 14px 0;
+            border-radius: 60px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.25s;
+            border: 1px solid transparent;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-support {
+            background: linear-gradient(135deg, #1a3a6a, #0f1a3a);
+            color: #b0ccff;
+            border-color: rgba(60, 140, 255, 0.12);
+        }
+
+        .btn-support:hover {
+            background: linear-gradient(135deg, #2a4a8a, #1a2a5a);
+            border-color: #4a8aff;
+            transform: scale(1.02);
+            box-shadow: 0 0 40px rgba(60, 140, 255, 0.04);
+        }
+
+        .btn-reject {
+            background: rgba(60, 30, 30, 0.2);
+            color: #6a4a4a;
+            border-color: rgba(200, 60, 60, 0.06);
+        }
+
+        .btn-reject:hover {
+            background: rgba(120, 40, 40, 0.2);
+            color: #a06060;
+            border-color: rgba(200, 60, 60, 0.1);
+        }
+
+        /* ===== 对接验证 ===== */
+        .verify-card {
+            background: linear-gradient(145deg, #111b2e, #0a1020);
+            border-radius: 32px;
+            padding: 36px 26px 34px;
+            border: 1px solid rgba(60, 140, 255, 0.06);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+            text-align: center;
+        }
+
+        .verify-card .lock-icon {
+            font-size: 44px;
+            color: #4a8aff;
+            margin-bottom: 8px;
+            filter: drop-shadow(0 0 30px rgba(60, 140, 255, 0.08));
+        }
+
+        .verify-card h2 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #e0ecff;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+
+        .verify-card .sub-desc {
+            color: #4a6a8a;
+            font-size: 14px;
+            margin-bottom: 6px;
+        }
+
+        .verify-card .voluntary-notice {
+            background: rgba(60, 140, 255, 0.03);
+            border: 1px solid rgba(60, 140, 255, 0.04);
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin: 12px 0 20px;
+            font-size: 13px;
+            color: #6a8aaa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .verify-card .voluntary-notice i {
+            color: #4a8aff;
+            font-size: 16px;
+        }
+
+        .verify-section {
+            margin-top: 8px;
+        }
+
+        .verify-section .section-label {
+            text-align: left;
+            font-size: 14px;
+            font-weight: 600;
+            color: #7a9abc;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .verify-section .section-label i {
+            color: #4a8aff;
+            font-size: 14px;
+        }
+
+        .verify-input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .verify-input-group .input-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .verify-input-group input {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(60, 120, 255, 0.06);
+            border-radius: 60px;
+            padding: 14px 20px;
+            font-size: 15px;
+            color: #e0ecff;
+            outline: none;
+            transition: 0.25s;
+            letter-spacing: 0.5px;
+        }
+
+        .verify-input-group input::placeholder {
+            color: #3a5a7a;
+            letter-spacing: 0.3px;
+            font-size: 14px;
+        }
+
+        .verify-input-group input:focus {
+            border-color: rgba(60, 140, 255, 0.15);
+            box-shadow: 0 0 30px rgba(60, 140, 255, 0.02);
+        }
+
+        .verify-input-group .btn-verify-action {
+            padding: 14px 28px;
+            background: linear-gradient(135deg, #1a3a6a, #0f1a3a);
+            color: #b0ccff;
+            border: 1px solid rgba(60, 140, 255, 0.08);
+            border-radius: 60px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.25s;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .verify-input-group .btn-verify-action:hover {
+            background: linear-gradient(135deg, #2a4a8a, #1a2a5a);
+            border-color: #4a8aff;
+            transform: scale(1.02);
+        }
+
+        .btn-buy-code {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            color: #0a1020;
+            border: none;
+            border-radius: 60px;
+            font-size: 17px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: 0.25s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            text-decoration: none;
+            box-shadow: 0 0 40px rgba(251, 191, 36, 0.04);
+            margin-top: 6px;
+        }
+
+        .btn-buy-code:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 60px rgba(251, 191, 36, 0.08);
+        }
+
+        .btn-buy-code:active {
+            transform: scale(0.97);
+        }
+
+        .btn-buy-code i {
+            font-size: 18px;
+        }
+
+        .verify-error {
+            color: #ef6b6b;
+            font-size: 13px;
+            min-height: 22px;
+            margin-top: 2px;
+        }
+
+        .verify-success {
+            color: #4ade80;
+            font-size: 13px;
+            min-height: 22px;
+            margin-top: 2px;
+        }
+
+        .back-to-notice {
+            margin-top: 18px;
+            background: transparent;
+            border: none;
+            color: #3a5a7a;
+            font-size: 13px;
+            cursor: pointer;
+            transition: 0.2s;
+            padding: 6px 14px;
+            border-radius: 40px;
+        }
+
+        .back-to-notice:hover {
+            color: #5a7a9a;
+            background: rgba(60, 120, 255, 0.03);
+        }
+
+        /* ===== Toast ===== */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: #0d1420;
+            border: 1px solid rgba(60, 140, 255, 0.06);
+            color: #c8d0e0;
+            padding: 14px 28px;
+            border-radius: 60px;
+            font-weight: 500;
+            font-size: 14px;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.8);
+            opacity: 0;
+            pointer-events: none;
+            transition: 0.3s ease;
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            backdrop-filter: blur(12px);
+            max-width: 92%;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+            pointer-events: auto;
+        }
+
+        .toast i {
+            font-size: 18px;
+            color: #4a8aff;
+        }
+
+        .toast.error i {
+            color: #ef6b6b;
+        }
+
+        .toast.success i {
+            color: #4ade80;
+        }
+
+        /* ===== 响应式 ===== */
+        @media (max-width: 480px) {
+            .loading-card,
+            .notice-card,
+            .verify-card {
+                padding: 28px 16px 24px;
+                border-radius: 24px;
+            }
+
+            .loading-title {
+                font-size: 22px;
+            }
+            .notice-title {
+                font-size: 22px;
+            }
+            .verify-card h2 {
+                font-size: 20px;
+            }
+
+            .notice-body {
+                font-size: 13px;
+                padding: 14px 16px;
+            }
+
+            .notice-footer {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .notice-footer button {
+                padding: 14px 0;
+                font-size: 15px;
+            }
+
+            .verify-input-group .input-row {
+                flex-direction: column;
+            }
+
+            .verify-input-group .btn-verify-action {
+                justify-content: center;
+                padding: 14px;
+            }
+
+            .btn-buy-code {
+                font-size: 15px;
+                padding: 14px;
+            }
+
+            .loading-partner {
+                font-size: 13px;
+                padding: 8px 18px;
+            }
+
+            .loading-logo {
+                font-size: 48px;
+            }
+
+            .verify-card .voluntary-notice {
+                font-size: 12px;
+                padding: 10px 14px;
+                flex-wrap: wrap;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .loading-title {
+                font-size: 18px;
+            }
+            .notice-title {
+                font-size: 18px;
+            }
+            .verify-card h2 {
+                font-size: 17px;
+            }
+            .notice-body {
+                font-size: 12px;
+                padding: 12px 14px;
+            }
+            .notice-body .price-tag {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+
+        <!-- ===== 加载动画 ===== -->
+        <div class="page active" id="pageLoading">
+            <div class="loading-card">
+                <div class="loading-logo"><i class="fas fa-shield-halved"></i></div>
+                <div class="loading-title">神秘辅助交易平台</div>
+                <div class="loading-sub">和平精英 · 专属通道</div>
+                <div class="loading-partner">
+                    <i class="fas fa-handshake"></i>
+                    合作伙伴 · <strong>橙子</strong>
+                </div>
+                <div class="loader-bar"></div>
+                <div class="loading-hint"><i class="fas fa-circle-notch fa-spin" style="margin-right:6px;"></i>正在加载安全通道...</div>
+            </div>
+        </div>
+
+        <!-- ===== 公告 ===== -->
+        <div class="page" id="pageNotice">
+            <div class="notice-card">
+                <span class="notice-icon"><i class="fas fa-bullhorn"></i></span>
+                <div class="notice-title">平台公告</div>
+                <div class="notice-sub">· 合作声明 ·</div>
+
+                <div class="notice-body">
+                    <p style="margin-bottom:6px;">
+                        <i class="fas fa-user-astronaut" style="color:#4a8aff;margin-right:8px;"></i>
+                        本平台合作伙伴为 <span class="partner-name">橙子</span>，
+                        由我方代售其辅助资源。
+                    </p>
+                    <p style="margin-bottom:6px;color:#6a8aaa;font-size:13px;">
+                        <i class="fas fa-info-circle" style="color:#3a5a7a;margin-right:8px;"></i>
+                        橙子现暂停直售，由本平台提供中间对接服务。
+                    </p>
+                    <hr class="divider" />
+                    <div class="fee-detail">
+                        <span>
+                            <i class="fas fa-tag"></i> 对接服务费（成本价）：
+                            <span class="price-tag">¥3.50</span>
+                        </span>
+                        <span style="color:#6a8aaa;font-size:13px;">
+                            <i class="fas fa-arrow-right" style="color:#3a5a7a;"></i>
+                            仅收取基础对接费用，无任何隐藏收费
+                        </span>
+                    </div>
+                    <hr class="divider" />
+                    <p style="font-size:13px;color:#5a7a9a;display:flex;align-items:center;gap:8px;">
+                        <i class="fas fa-cloud-download" style="color:#4a8aff;"></i>
+                        验证对接码后 <span style="color:#7ab7ff;font-weight:600;">一键跳转网盘</span>，
+                        资源内附详细教程。
+                    </p>
+                </div>
+
+                <div class="notice-footer">
+                    <button class="btn-support" id="btnSupport">
+                        <i class="fas fa-check-circle"></i> 我支持 · 同意
+                    </button>
+                    <button class="btn-reject" id="btnReject">
+                        <i class="fas fa-times-circle"></i> 我不支持
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== 对接验证 ===== -->
+        <div class="page" id="pageVerify">
+            <div class="verify-card">
+                <div class="lock-icon"><i class="fas fa-key"></i></div>
+                <h2>对接验证</h2>
+                <div class="sub-desc">请输入您的对接码以获取资源</div>
+
+                <div class="voluntary-notice">
+                    <i class="fas fa-hand-holding-heart"></i>
+                    本平台纯凭自愿，不强求你进行购买
+                </div>
+
+                <!-- 验证对接码 -->
+                <div class="verify-section">
+                    <div class="section-label">
+                        <i class="fas fa-shield-check"></i> 验证对接码
+                    </div>
+                    <div class="verify-input-group">
+                        <div class="input-row">
+                            <input type="text" id="codeInput" placeholder="请输入对接码" autocomplete="off" />
+                            <button class="btn-verify-action" id="verifyBtn">
+                                <i class="fas fa-check"></i> 验证
+                            </button>
+                        </div>
+                    </div>
+                    <div id="verifyFeedback" class="verify-error"></div>
+                </div>
+
+                <!-- 购买对接码 -->
+                <div style="margin-top:16px;padding-top:16px;border-top:1px solid rgba(60,120,255,0.04);">
+                    <div class="section-label" style="margin-bottom:8px;">
+                        <i class="fas fa-cart-plus"></i> 购买对接码
+                    </div>
+                    <a href="https://new.cayfpay.cn/shop/291" target="_blank" class="btn-buy-code" id="buyCodeBtn">
+                        <i class="fas fa-credit-card"></i> 立即购买对接码
+                    </a>
+                    <p style="font-size:12px;color:#2a4a6a;margin-top:10px;letter-spacing:0.3px;">
+                        <i class="fas fa-lock" style="margin-right:4px;"></i> 支付后系统自动发送对接码至您的邮箱
+                    </p>
+                </div>
+
+                <button class="back-to-notice" id="backToNoticeFromVerify">
+                    <i class="fas fa-arrow-left" style="margin-right:6px;"></i> 返回公告
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ===== Toast ===== -->
+    <div class="toast" id="toast">
+        <i class="fas fa-circle-check"></i>
+        <span id="toastMessage">提示信息</span>
+    </div>
+
+    <script>
+        // ============================================================
+        //  ★ 配置区 · 请根据实际情况修改 ★
+        // ============================================================
+
+        // ★★★ 网盘跳转链接（验证成功后自动跳转）
+        const DISK_URL = 'https://1819340090.share.123pan.cn/123pan/TX79jv-Ic0Uv';
+
+        // ★★★ 预设有效对接码（复杂字符串，防止二次仿用）
+        // 建议定期更换，并增加长度和复杂度
+        const VALID_CODES = [
+            'X9kL#2mP$5qR@8vN',    // 16位，含大小写、数字、特殊符号
+            'T3sH&8vN!6wB*7cM',    // 16位
+            'F7aC^1uM*4zE#9dL',    // 16位
+            'R2tY$5pQ@8nX!3sW',    // 16位
+            'J6kL#9fG$2rT*1vH'     // 16位
+        ];
+
+        // ★★★ 购买对接码的支付链接
+        const PAY_URL = 'https://new.cayfpay.cn/shop/291';
+
+        // ============================================================
+        //  DOM 引用
+        // ============================================================
+        const pageLoading = document.getElementById('pageLoading');
+        const pageNotice = document.getElementById('pageNotice');
+        const pageVerify = document.getElementById('pageVerify');
+
+        const btnSupport = document.getElementById('btnSupport');
+        const btnReject = document.getElementById('btnReject');
+        const btnVerify = document.getElementById('verifyBtn');
+        const codeInput = document.getElementById('codeInput');
+        const verifyFeedback = document.getElementById('verifyFeedback');
+        const backToNoticeFromVerify = document.getElementById('backToNoticeFromVerify');
+        const buyCodeBtn = document.getElementById('buyCodeBtn');
+
+        const toast = document.getElementById('toast');
+        const toastMsg = document.getElementById('toastMessage');
+        let toastTimer = null;
+
+        // ============================================================
+        //  页面切换
+        // ============================================================
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+        }
+
+        // ============================================================
+        //  Toast
+        // ============================================================
+        function showToast(msg, type = 'info') {
+            toastMsg.textContent = msg;
+            toast.className = 'toast';
+            if (type === 'error') {
+                toast.classList.add('error');
+                toast.querySelector('i').className = 'fas fa-circle-exclamation';
+            } else if (type === 'success') {
+                toast.classList.add('success');
+                toast.querySelector('i').className = 'fas fa-circle-check';
+            } else {
+                toast.querySelector('i').className = 'fas fa-circle-info';
+            }
+            toast.classList.add('show');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2800);
+        }
+
+        // ============================================================
+        //  加载动画 → 自动进入公告
+        // ============================================================
+        setTimeout(() => {
+            showPage('pageNotice');
+            setTimeout(() => {
+                showToast('🔔 请阅读公告后继续', 'info');
+            }, 400);
+        }, 2800);
+
+        // ============================================================
+        //  公告页逻辑
+        // ============================================================
+
+        btnSupport.addEventListener('click', () => {
+            showPage('pageVerify');
+            verifyFeedback.textContent = '';
+            verifyFeedback.className = 'verify-error';
+            codeInput.value = '';
+            setTimeout(() => codeInput.focus(), 300);
+            showToast('🔑 请输入对接码进行验证', 'info');
+        });
+
+        btnReject.addEventListener('click', () => {
+            showToast('您已选择退出，页面即将关闭...', 'error');
+            setTimeout(() => {
+                window.close();
+                document.body.innerHTML = `
+                    <div style="display:flex;align-items:center;justify-content:center;height:100vh;color:#3a5a7a;font-size:18px;flex-direction:column;gap:14px;background:#080b12;">
+                        <i class="fas fa-door-open" style="font-size:52px;color:#4a5a7a;opacity:0.4;"></i>
+                        <span style="font-weight:300;letter-spacing:1px;">您已离开平台</span>
+                        <span style="font-size:13px;color:#2a4a6a;">可关闭此标签页</span>
+                    </div>
+                `;
+            }, 600);
+        });
+
+        // ============================================================
+        //  验证页逻辑
+        // ============================================================
+
+        // 验证对接码（区分大小写）
+        function verifyCode(code) {
+            const clean = code.trim(); // 保留大小写，不去空格（但允许首尾空格）
+            if (clean.length < 10) return false; // 至少10位
+            // 完全匹配预设码（区分大小写）
+            return VALID_CODES.some(v => v === clean);
+        }
+
+        btnVerify.addEventListener('click', () => {
+            const input = codeInput.value.trim();
+            if (!input) {
+                verifyFeedback.textContent = '⚠️ 请输入对接码';
+                verifyFeedback.className = 'verify-error';
+                return;
+            }
+
+            if (verifyCode(input)) {
+                verifyFeedback.textContent = '✅ 对接码验证成功！正在跳转网盘...';
+                verifyFeedback.className = 'verify-success';
+                showToast('✅ 验证成功，即将跳转网盘', 'success');
+
+                setTimeout(() => {
+                    window.open(DISK_URL, '_blank');
+                    showToast('📦 网盘已打开，资源内含教程', 'success');
+                }, 800);
+            } else {
+                verifyFeedback.textContent = '❌ 对接码无效，请确认后重试';
+                verifyFeedback.className = 'verify-error';
+                codeInput.value = '';
+                codeInput.focus();
+                showToast('❌ 对接码验证失败', 'error');
+            }
+        });
+
+        codeInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                btnVerify.click();
+            }
+        });
+
+        codeInput.addEventListener('input', () => {
+            verifyFeedback.textContent = '';
+            verifyFeedback.className = 'verify-error';
+        });
+
+        backToNoticeFromVerify.addEventListener('click', () => {
+            showPage('pageNotice');
+            verifyFeedback.textContent = '';
+            verifyFeedback.className = 'verify-error';
+            codeInput.value = '';
+        });
+
+        // ============================================================
+        //  购买对接码
+        // ============================================================
+        buyCodeBtn.addEventListener('click', (e) => {
+            showToast('🔄 正在跳转至支付页面...', 'info');
+        });
+
+        // ============================================================
+        //  预置焦点
+        // ============================================================
+        const observer = new MutationObserver(() => {
+            if (pageVerify.classList.contains('active')) {
+                setTimeout(() => codeInput.focus(), 200);
+            }
+        });
+        observer.observe(pageVerify, { attributes: true, attributeFilter: ['class'] });
+
+        // ============================================================
+        //  控制台提示（便于调试）
+        // ============================================================
+        console.log('🔮 神秘辅助交易平台 v2.0 (加强版)');
+        console.log('📌 预设对接码 (区分大小写):');
+        VALID_CODES.forEach(c => console.log('   ' + c));
+        console.log('📦 网盘链接: ' + DISK_URL);
+        console.log('💳 支付链接: ' + PAY_URL);
+        console.log('🤝 合作伙伴: 橙子');
+        console.log('⚠️ 请定期更换 VALID_CODES 以增强安全性');
+    </script>
+
+</body>
+</html>
